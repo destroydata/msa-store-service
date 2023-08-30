@@ -1,5 +1,7 @@
 package com.example.store.controller;
 
+import com.example.store.config.JwtService;
+import com.example.store.config.TokenInfo;
 import com.example.store.domain.request.StoreRequest;
 import com.example.store.domain.response.StoreResponse;
 import com.example.store.service.StoreService;
@@ -17,16 +19,23 @@ import java.util.UUID;
 @RequestMapping("/api/v1/store")
 public class StoreController {
     private final StoreService storeService;
-    public static UUID uuid = UUID.fromString("ba8f31aa-df58-4156-8ef9-a8dfa4b7648f");
+    private final JwtService jwtService;
 
     @PostMapping @ResponseStatus(HttpStatus.CREATED)
-    public void postStore(@RequestBody StoreRequest request){
-        storeService.save(request, uuid);
+    public void postStore(@RequestBody StoreRequest request
+    ,@RequestHeader("Authorization") String token){
+        TokenInfo tokenInfo = jwtService.parseToken(
+                token.replace("Bearer ", ""));
+        storeService.save(request, tokenInfo.getId());
+
     }
 
     @GetMapping("/owner")
-    public List<StoreResponse> getByOwnerId(){
-        return storeService.getByOwnerId(uuid);
+    public List<StoreResponse> getByOwnerId(
+            @RequestHeader("Authorization") String token){
+        TokenInfo tokenInfo = jwtService.parseToken(
+                token.replace("Bearer ", ""));
+        return storeService.getByOwnerId(tokenInfo.getId());
     }
 
     @GetMapping
