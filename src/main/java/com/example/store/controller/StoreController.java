@@ -49,6 +49,9 @@ public class StoreController {
         return storeService.
                 getByLocation(location, PageRequest.of(page,size));
     }
-
+    @GetMapping("test")
+    public String test(){
+        return "service-2";
+    }
 
 }

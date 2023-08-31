@@ -17,6 +17,7 @@ import java.util.UUID;
 public class JwtService {
     @Value("${jwt.secret}")
     private String secret;
+
     public TokenInfo parseToken(String token){
         Claims body = (Claims) Jwts.parserBuilder()
                 .setSigningKey(secret.getBytes())
